@@ -37,9 +37,18 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
-      - name: Build Executable
+      # Windows用ビルドステップ
+      - name: Build Executable on Windows
+        if: runner.os == 'Windows'
         run: |
           pyinstaller --onefile --noconsole --add-data "Images;Images" --add-data "Worlds;Worlds" main.py
+        shell: cmd
+
+      # macOS/Linux用ビルドステップ
+      - name: Build Executable on macOS and Linux
+        if: runner.os != 'Windows'
+        run: |
+          pyinstaller --onefile --noconsole --add-data "Images:Images" --add-data "Worlds:Worlds" main.py
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
